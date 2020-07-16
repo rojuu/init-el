@@ -69,6 +69,7 @@
       '(projectile
         ido
         magit
+        rg
         rainbow-delimiters
         sublimity
         which-key
@@ -85,7 +86,7 @@
     (package-install pkg)))
 
 ;;
-;; Fuzzy find and file opening
+;; Simple utility
 ;;
 
 (require 'ido)
@@ -98,9 +99,7 @@
 
 (require 'magit)
 
-;;
-;; Visuals
-;;
+(require 'rg)
 
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
