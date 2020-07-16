@@ -53,6 +53,8 @@
 
 (global-set-key (kbd "C-x w") 'whitespace-mode)
 
+(global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
+
 ;;
 ;; Packages
 ;;
