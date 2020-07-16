@@ -6,6 +6,9 @@
 (menu-bar-mode 1)
 (scroll-bar-mode 0)
 
+;; show cwd in tile bar
+(setq frame-title-format '((:eval default-directory)))
+
 ;; Saner defaults
 (global-auto-revert-mode 1) ;; auto load file changes
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; auto load dired changes
