@@ -36,7 +36,7 @@
 (defun setup-general-code-modes ()
   (infer-indentation-style))
 
-(dolist (hook '(c-mode-hook c++-mode-hook))
+(dolist (hook '(prog-mode-hook))
   (add-hook hook 'setup-general-code-modes))
 
 ;;
