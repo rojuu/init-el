@@ -69,6 +69,7 @@
       '(projectile
         ido
         magit
+        rainbow-delimiters
         sublimity
         which-key
         lsp-mode
@@ -96,6 +97,13 @@
 (global-set-key (kbd "C-x p") 'projectile-find-file)
 
 (require 'magit)
+
+;;
+;; Visuals
+;;
+
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;;
 ;; Smooth scrolling
