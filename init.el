@@ -73,7 +73,6 @@
         magit
         rg
         rainbow-delimiters
-        sublimity
         which-key
         lsp-mode
         lsp-ui
@@ -97,7 +96,7 @@
 (ido-mode 1)
 
 (require 'projectile)
-(global-set-key (kbd "C-x p") 'projectile-find-file)
+(global-set-key (kbd "C-x p") 'projectile-command-map)
 
 (require 'magit)
 
@@ -116,10 +115,6 @@
 ;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 ;; (setq scroll-step 1) ;; keyboard scroll one line at a time
-
-(require 'sublimity)
-(require 'sublimity-scroll)
-(sublimity-mode 1)
 
 ;; Which key
 (require 'which-key)
