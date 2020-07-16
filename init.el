@@ -48,8 +48,6 @@
 
 (global-set-key (kbd "C-x t") 'delete-trailing-whitespace)
 
-(global-set-key (kbd "C-,") (kbd "C-x @ s"))
-
 (global-set-key (kbd "C-x G") 'compile)
 (global-set-key (kbd "C-x C-g") 'recompile)
 
@@ -127,6 +125,21 @@
 (require 'company)
 (require 'company-lsp)
 
+(require 'lsp)
+
+(global-set-key (kbd "C-c l d") 'lsp-find-definition)
+(global-set-key (kbd "C-c l r") 'lsp-find-references)
+(global-set-key (kbd "C-c l n") 'lsp-rename)
+(global-set-key (kbd "C-c l f r") 'lsp-format-region)
+(global-set-key (kbd "C-c l f b") 'lsp-format-buffer)
+
+(add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
+(lsp-register-client
+ (make-lsp-client
+  :new-connection (lsp-stdio-connection "zls")
+  :major-modes '(zig-mode)
+  :server-id 'zls))
+
 (add-hook 'c-mode-hook 'lsp)
 (add-hook 'c++-mode-hook 'lsp)
-
+(add-hook 'zig-mode-hook 'lsp)
