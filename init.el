@@ -49,7 +49,7 @@
 
 (global-set-key (kbd "C-,") (kbd "C-x @ s"))
 
-(global-set-key (kbd "C-x g") 'compile)
+(global-set-key (kbd "C-x G") 'compile)
 (global-set-key (kbd "C-x C-g") 'recompile)
 
 ;;
@@ -93,6 +93,8 @@
 
 (require 'projectile)
 (global-set-key (kbd "C-x p") 'projectile-find-file)
+
+(require 'magit)
 
 ;;
 ;; Smooth scrolling
