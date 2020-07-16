@@ -135,11 +135,13 @@
 
 (require 'lsp)
 
-(global-set-key (kbd "C-c l d") 'lsp-find-definition)
-(global-set-key (kbd "C-c l r") 'lsp-find-references)
-(global-set-key (kbd "C-c l n") 'lsp-rename)
-(global-set-key (kbd "C-c l f r") 'lsp-format-region)
-(global-set-key (kbd "C-c l f b") 'lsp-format-buffer)
+(setq lsp-ui-doc-enable nil)
+
+(global-set-key (kbd "C-x x d") 'lsp-find-definition)
+(global-set-key (kbd "C-x x r") 'lsp-find-references)
+(global-set-key (kbd "C-x x n") 'lsp-rename)
+(global-set-key (kbd "C-x x f") 'lsp-format-region) ;; seems to format full buffer if no active region
+(global-set-key (kbd "C-x x k") 'lsp-ui-doc-glance)
 
 (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
 (lsp-register-client
