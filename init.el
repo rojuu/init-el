@@ -1,11 +1,10 @@
 ;;
 ;; Visuals
 ;;
+
 (tool-bar-mode 0)
 (menu-bar-mode 1)
 (scroll-bar-mode 0)
-
-(setq-default cursor-type 'bar)
 
 ;; Saner defaults
 (global-auto-revert-mode 1) ;; auto load file changes
@@ -72,6 +71,8 @@
         ido
         magit
         rg
+        evil
+        undo-tree
         rainbow-delimiters
         which-key
         lsp-mode
@@ -105,6 +106,12 @@
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
+(require 'which-key)
+(which-key-mode)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
+
 ;;
 ;; Smooth scrolling
 ;;
@@ -116,9 +123,17 @@
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 ;; (setq scroll-step 1) ;; keyboard scroll one line at a time
 
-;; Which key
-(require 'which-key)
-(which-key-mode)
+;;
+;; Evil mode
+;;
+
+(require 'evil)
+(evil-mode 1)
+
+(setq evil-default-cursor '("green" box)
+      evil-normal-state-cursor '("green" box)
+      evil-emacs-state-cursor '("red" box)
+      evil-insert-state-cursor '("yellow" bar))
 
 ;;
 ;; LSP stuff
