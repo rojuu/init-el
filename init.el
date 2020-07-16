@@ -15,6 +15,8 @@
 
 (setq inhibit-startup-message t) ;; disable splash screen
 
+(setq-default show-trailing-whitespace t)
+
 ;;
 ;; Indentation and code style
 ;;
@@ -32,8 +34,7 @@
     (if (> tab-count space-count) (setq indent-tabs-mode t))))
 
 (defun setup-general-code-modes ()
-  (infer-indentation-style)
-  (setq-default show-trailing-whitespace t))
+  (infer-indentation-style))
 
 (dolist (hook '(c-mode-hook c++-mode-hook))
   (add-hook hook 'setup-general-code-modes))
