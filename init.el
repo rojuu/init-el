@@ -52,6 +52,8 @@
 (global-set-key (kbd "C-x G") 'compile)
 (global-set-key (kbd "C-x C-g") 'recompile)
 
+(global-set-key (kbd "C-x w") 'whitespace-mode)
+
 ;;
 ;; Packages
 ;;
