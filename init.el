@@ -19,6 +19,8 @@
 
 (setq inhibit-startup-message t) ;; disable splash screen
 
+(setq compilation-scroll-output t) ;; will automatically place cursor at end of compilation buffer on first compile
+
 (setq-default show-trailing-whitespace t)
 
 ;;
