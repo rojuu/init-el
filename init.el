@@ -14,6 +14,7 @@
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; auto load dired changes
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq make-backup-files nil)
+(setq auto-save-default nil)
 
 (setq ring-bell-function 'ignore)
 
