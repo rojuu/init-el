@@ -151,6 +151,8 @@
 
 (setq lsp-ui-doc-enable nil)
 
+(define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
+
 (global-set-key (kbd "C-x x d") 'lsp-find-definition)
 (global-set-key (kbd "C-x x r") 'lsp-find-references)
 (global-set-key (kbd "C-x x n") 'lsp-rename)
