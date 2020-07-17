@@ -41,6 +41,11 @@
 (dolist (hook '(prog-mode-hook))
   (add-hook hook 'setup-general-code-modes))
 
+;; Term mode hook
+(defun fn-term-mode-hook ()
+  (setq show-trailing-whitespace nil))
+(add-hook 'term-mode-hook 'fn-term-mode-hook)
+
 ;;
 ;; Key binds
 ;;
