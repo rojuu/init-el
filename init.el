@@ -15,7 +15,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq make-backup-files nil)
 
-(setq ring-bell-function ignore)
+(setq ring-bell-function 'ignore)
 
 (setq inhibit-startup-message t) ;; disable splash screen
 
