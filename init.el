@@ -159,9 +159,9 @@
 (define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
 
 (global-set-key (kbd "C-x x d") 'lsp-find-definition)
-(global-set-key (kbd "C-x x r") 'lsp-find-references)
 (global-set-key (kbd "C-x x n") 'lsp-rename)
-(global-set-key (kbd "C-x x f") 'lsp-format-region) ;; seems to format full buffer if no active region
+(global-set-key (kbd "C-x x r") 'lsp-format-region)
+(global-set-key (kbd "C-x x b") 'lsp-format-buffer)
 (global-set-key (kbd "C-x x k") 'lsp-ui-doc-glance)
 
 (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
