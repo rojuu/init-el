@@ -73,7 +73,7 @@
 
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
-		("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa" . "http://melpa.org/packages/")))
 
 (require 'package)
@@ -92,7 +92,7 @@
         lsp-ui
         company
         company-lsp
-		zig-mode
+        zig-mode
         markdown-mode
         json-mode))
 
