@@ -67,6 +67,44 @@
 
 (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
 
+
+;; Back/forward withing jump list
+(defun marker-is-point-p (marker)
+  "test if marker is current point"
+  (and (eq (marker-buffer marker) (current-buffer))
+       (= (marker-position marker) (point))))
+
+(defun push-mark-maybe ()
+  "push mark onto `global-mark-ring' if mark head or tail is not current location"
+  (if (not global-mark-ring) (error "global-mark-ring empty")
+    (unless (or (marker-is-point-p (car global-mark-ring))
+                (marker-is-point-p (car (reverse global-mark-ring))))
+      (push-mark))))
+
+
+(defun backward-global-mark ()
+  "use `pop-global-mark', pushing current point if not on ring."
+  (interactive)
+  (push-mark-maybe)
+  (when (marker-is-point-p (car global-mark-ring))
+    (call-interactively 'pop-global-mark))
+  (call-interactively 'pop-global-mark))
+
+(defun forward-global-mark ()
+  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
+  (interactive)
+  (push-mark-maybe)
+  (setq global-mark-ring (nreverse global-mark-ring))
+  (when (marker-is-point-p (car global-mark-ring))
+    (call-interactively 'pop-global-mark))
+  (call-interactively 'pop-global-mark)
+  (setq global-mark-ring (nreverse global-mark-ring)))
+
+(global-set-key (kbd "<mouse-8>") (quote backward-global-mark))
+(global-set-key (kbd "<mouse-9>") (quote forward-global-mark))
+(global-set-key [M-left]  (quote backward-global-mark))
+(global-set-key [M-right] (quote forward-global-mark))
+
 ;;
 ;; Packages
 ;;
@@ -84,7 +122,7 @@
         ido
         magit
         rg
-        evil
+        ;; evil
         undo-tree
         rainbow-delimiters
         which-key
@@ -131,8 +169,8 @@
 
 ;; imporved mouse scrolling
 ;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 ;; (setq scroll-step 1) ;; keyboard scroll one line at a time
 
@@ -140,13 +178,13 @@
 ;; Evil mode
 ;;
 
-(require 'evil)
-(evil-mode 1)
+;; (require 'evil)
+;; (evil-mode 1)
 
-(setq evil-default-cursor '("green" box)
-      evil-normal-state-cursor '("green" box)
-      evil-emacs-state-cursor '("red" box)
-      evil-insert-state-cursor '("yellow" bar))
+;; (setq evil-default-cursor '("green" box)
+;;       evil-normal-state-cursor '("green" box)
+;;       evil-emacs-state-cursor '("red" box)
+;;       evil-insert-state-cursor '("yellow" bar))
 
 ;;
 ;; LSP stuff
@@ -161,8 +199,9 @@
 
 (setq lsp-ui-doc-enable nil)
 
-(define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
+;; (define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
 
+(global-set-key (kbd "<f12>") 'lsp-find-definition)
 (global-set-key (kbd "C-x x d") 'lsp-find-definition)
 (global-set-key (kbd "C-x x n") 'lsp-rename)
 (global-set-key (kbd "C-x x r") 'lsp-format-region)
