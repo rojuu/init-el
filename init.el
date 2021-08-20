@@ -16,13 +16,25 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+;; auto repeat search
+(defadvice isearch-repeat (after isearch-no-fail activate)
+  (unless isearch-success
+    (ad-disable-advice 'isearch-repeat 'after 'isearch-no-fail)
+    (ad-activate 'isearch-repeat)
+    (isearch-repeat (if isearch-forward 'forward))
+    (ad-enable-advice 'isearch-repeat 'after 'isearch-no-fail)
+    (ad-activate 'isearch-repeat)))
+
 (setq ring-bell-function 'ignore)
 
 (setq inhibit-startup-message t) ;; disable splash screen
 
 (setq compilation-scroll-output t) ;; will automatically place cursor at end of compilation buffer on first compile
 
-(setq-default show-trailing-whitespace t)
+;;(setq-default show-trailing-whitespace t)
+(setq-default show-trailing-whitespace nil)
+
+(setq transient-mark-mode nil)
 
 ;;
 ;; Indentation and code style
@@ -60,8 +72,10 @@
 
 (global-set-key (kbd "C-x t") 'delete-trailing-whitespace)
 
-(global-set-key (kbd "C-x G") 'compile)
-(global-set-key (kbd "C-x C-g") 'recompile)
+;; (global-set-key (kbd "C-x G") 'compile)
+;; (global-set-key (kbd "C-x C-g") 'recompile)
+
+(global-set-key (kbd "C-x C-c") 'calculator)
 
 (global-set-key (kbd "C-x w") 'whitespace-mode)
 
@@ -122,17 +136,25 @@
         ido
         magit
         rg
+        dumb-jump
         ;; evil
-        undo-tree
+        ;; undo-tree
         rainbow-delimiters
         which-key
-        lsp-mode
-        lsp-ui
-        company
-        company-lsp
+        ;; lsp-mode
+        ;; lsp-ui
+        ;; company
+        ;; company-lsp
+        inkpot-theme
+        ujelly-theme
         zig-mode
         markdown-mode
-        json-mode))
+        json-mode
+        glsl-mode
+        ))
+
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (dolist (pkg my-packages)
   (unless (package-installed-p pkg)
@@ -154,14 +176,17 @@
 
 (require 'rg)
 
+(require 'dumb-jump)
+(add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (require 'which-key)
 (which-key-mode)
 
-(require 'undo-tree)
-(global-undo-tree-mode)
+;; (require 'undo-tree)
+;; (global-undo-tree-mode)
 
 ;;
 ;; Smooth scrolling
@@ -169,10 +194,20 @@
 
 ;; imporved mouse scrolling
 ;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;; (setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
+;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 ;; (setq scroll-step 1) ;; keyboard scroll one line at a time
+
+;;
+;; Language modes
+;;
+
+(autoload 'glsl-mode "glsl-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.glsl\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.vert\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
 
 ;;
 ;; Evil mode
@@ -190,31 +225,31 @@
 ;; LSP stuff
 ;;
 
-(require 'lsp-mode)
-(require 'lsp-ui)
-(require 'company)
-(require 'company-lsp)
+;; (require 'lsp-mode)
+;; (require 'lsp-ui)
+;; (require 'company)
+;; (require 'company-lsp)
 
-(require 'lsp)
+;; (require 'lsp)
 
-(setq lsp-ui-doc-enable nil)
+;; (setq lsp-ui-doc-enable nil)
 
 ;; (define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
 
-(global-set-key (kbd "<f12>") 'lsp-find-definition)
-(global-set-key (kbd "C-x x d") 'lsp-find-definition)
-(global-set-key (kbd "C-x x n") 'lsp-rename)
-(global-set-key (kbd "C-x x r") 'lsp-format-region)
-(global-set-key (kbd "C-x x b") 'lsp-format-buffer)
-(global-set-key (kbd "C-x x k") 'lsp-ui-doc-glance)
+;; (global-set-key (kbd "<f12>") 'lsp-find-definition)
+;; (global-set-key (kbd "C-x x d") 'lsp-find-definition)
+;; (global-set-key (kbd "C-x x n") 'lsp-rename)
+;; (global-set-key (kbd "C-x x r") 'lsp-format-region)
+;; (global-set-key (kbd "C-x x b") 'lsp-format-buffer)
+;; (global-set-key (kbd "C-x x k") 'lsp-ui-doc-glance)
 
-(add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
-(lsp-register-client
- (make-lsp-client
-  :new-connection (lsp-stdio-connection "zls")
-  :major-modes '(zig-mode)
-  :server-id 'zls))
+;; (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
+;; (lsp-register-client
+;; (make-lsp-client
+;;  :new-connection (lsp-stdio-connection "zls")
+;;  :major-modes '(zig-mode)
+;;  :server-id 'zls))
 
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'zig-mode-hook 'lsp)
+;; (add-hook 'c-mode-hook 'lsp)
+;; (add-hook 'c++-mode-hook 'lsp)
+;; (add-hook 'zig-mode-hook 'lsp)
