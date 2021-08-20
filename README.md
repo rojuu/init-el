@@ -4,7 +4,10 @@ Emacs config for my coding stuff when I feel like it. Intended to be cloned sepa
 ```
 (load "~/Projects/init-el/init.el")
 
-(setq default-frame-alist '((font . "Fira Mono-14")))
+;; optionally set font
+;; (setq default-frame-alist '((font . "Fira Mono-14")))
+
+(setq custom-safe-themes t)   ; Treat all themes as safe
 (load-theme 'inkpot)
 ```
 
