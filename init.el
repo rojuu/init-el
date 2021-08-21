@@ -67,15 +67,13 @@
 ;; Key binds
 ;;
 
-(global-set-key (kbd "M-n") 'forward-paragraph)
-(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'scroll-up)
+(global-set-key (kbd "M-p") 'scroll-down)
 
 (global-set-key (kbd "C-x t") 'delete-trailing-whitespace)
 
 ;; (global-set-key (kbd "C-x G") 'compile)
 (global-set-key (kbd "C-x C-g") 'recompile)
-
-(global-set-key (kbd "C-x C-c") 'calculator)
 
 (global-set-key (kbd "C-x w") 'whitespace-mode)
 
@@ -124,9 +122,9 @@
 ;;
 
 (setq package-archives
-      '(("gnu" . "http://elpa.gnu.org/packages/")
+      '(("gnu"          . "http://elpa.gnu.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("melpa" . "http://melpa.org/packages/")))
+        ("melpa"        . "http://melpa.org/packages/")))
 
 (require 'package)
 (package-initialize)
