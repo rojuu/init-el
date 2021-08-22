@@ -1,5 +1,5 @@
 ;;(require 'benchmark-init)
-;; To disable collection of benchmark data after init is done.
+;;;;To disable collection of benchmark data after init is done.
 ;;(add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 ;;
@@ -100,53 +100,55 @@
     (call-interactively 'pop-global-mark))
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
+
+
 (defun ido-goto-symbol (&optional symbol-list)
-      "Refresh imenu and jump to a place in the buffer using Ido."
-      (interactive)
-      (unless (featurep 'imenu)
-        (require 'imenu nil t))
+  "Refresh imenu and jump to a place in the buffer using Ido."
+  (interactive)
+  (unless (featurep 'imenu)
+    (require 'imenu nil t))
+  (cond
+   ((not symbol-list)
+    (let ((ido-mode ido-mode)
+          (ido-enable-flex-matching
+           (if (boundp 'ido-enable-flex-matching)
+               ido-enable-flex-matching t))
+          name-and-pos symbol-names position)
+      (unless ido-mode
+        (ido-mode 1)
+        (setq ido-enable-flex-matching t))
+      (while (progn
+               (imenu--cleanup)
+               (setq imenu--index-alist nil)
+               (ido-goto-symbol (imenu--make-index-alist))
+               (setq selected-symbol
+                     (ido-completing-read "Symbol? " symbol-names))
+               (string= (car imenu--rescan-item) selected-symbol)))
+      (unless (and (boundp 'mark-active) mark-active)
+        (push-mark nil t nil))
+      (setq position (cdr (assoc selected-symbol name-and-pos)))
       (cond
-       ((not symbol-list)
-        (let ((ido-mode ido-mode)
-              (ido-enable-flex-matching
-               (if (boundp 'ido-enable-flex-matching)
-                   ido-enable-flex-matching t))
-              name-and-pos symbol-names position)
-          (unless ido-mode
-            (ido-mode 1)
-            (setq ido-enable-flex-matching t))
-          (while (progn
-                   (imenu--cleanup)
-                   (setq imenu--index-alist nil)
-                   (ido-goto-symbol (imenu--make-index-alist))
-                   (setq selected-symbol
-                         (ido-completing-read "Symbol? " symbol-names))
-                   (string= (car imenu--rescan-item) selected-symbol)))
-          (unless (and (boundp 'mark-active) mark-active)
-            (push-mark nil t nil))
-          (setq position (cdr (assoc selected-symbol name-and-pos)))
-          (cond
-           ((overlayp position)
-            (goto-char (overlay-start position)))
-           (t
-            (goto-char position)))))
-       ((listp symbol-list)
-        (dolist (symbol symbol-list)
-          (let (name position)
-            (cond
-             ((and (listp symbol) (imenu--subalist-p symbol))
-              (ido-goto-symbol symbol))
-             ((listp symbol)
-              (setq name (car symbol))
-              (setq position (cdr symbol)))
-             ((stringp symbol)
-              (setq name symbol)
-              (setq position
-                    (get-text-property 1 'org-imenu-marker symbol))))
-            (unless (or (null position) (null name)
-                        (string= (car imenu--rescan-item) name))
-              (add-to-list 'symbol-names name)
-              (add-to-list 'name-and-pos (cons name position))))))))    
+       ((overlayp position)
+        (goto-char (overlay-start position)))
+       (t
+        (goto-char position)))))
+   ((listp symbol-list)
+    (dolist (symbol symbol-list)
+      (let (name position)
+        (cond
+         ((and (listp symbol) (imenu--subalist-p symbol))
+          (ido-goto-symbol symbol))
+         ((listp symbol)
+          (setq name (car symbol))
+          (setq position (cdr symbol)))
+         ((stringp symbol)
+          (setq name symbol)
+          (setq position
+                (get-text-property 1 'org-imenu-marker symbol))))
+        (unless (or (null position) (null name)
+                    (string= (car imenu--rescan-item) name))
+          (add-to-list 'symbol-names name)
+          (add-to-list 'name-and-pos (cons name position))))))))    
 
 ;;
 ;; Packages
@@ -161,26 +163,7 @@
 (package-initialize)
 
 (setq my-packages
-      '(projectile
-        ido
-        magit
-        rg
-        dumb-jump
-        evil
-        ;; undo-tree
-        rainbow-delimiters
-        which-key
-        ;; lsp-mode
-        ;; lsp-ui
-        ;; company
-        ;; company-lsp
-        inkpot-theme
-        ujelly-theme
-        zig-mode
-        markdown-mode
-        json-mode
-        glsl-mode
-        ))
+      '(use-package))
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -193,29 +176,49 @@
 ;; Simple utility
 ;;
 
-(require 'ido)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
+(require 'use-package)
 
-(require 'projectile)
-(global-set-key (kbd "C-x p") 'projectile-command-map)
+(use-package ido
+  :ensure t
+  :config
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode 1))
 
-(require 'magit)
+(use-package projectile
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x p") 'projectile-command-map))
 
-(require 'rg)
+(use-package magit
+  :ensure t
+  :defer t)
 
-(require 'dumb-jump)
-(add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+(use-package rg
+  :ensure t
+  :defer t)
 
-(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(use-package dumb-jump
+  :ensure t
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-(require 'which-key)
-(which-key-mode)
+(use-package rainbow-delimiters
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-;; (require 'undo-tree)
-;; (global-undo-tree-mode)
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+(use-package inkpot-theme
+  :ensure t)
+
+(use-package ujelly-theme
+  :ensure t)
+
 
 ;;
 ;; Smooth scrolling
@@ -232,70 +235,61 @@
 ;; Language modes
 ;;
 
-(autoload 'glsl-mode "glsl-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.glsl\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.vert\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
+(use-package glsl-mode
+  :ensure t
+  :defer t
+  :config
+  (autoload 'glsl-mode "glsl-mode" nil t)
+  (add-to-list 'auto-mode-alist '("\\.glsl\\'" . glsl-mode))
+  (add-to-list 'auto-mode-alist '("\\.vert\\'" . glsl-mode))
+  (add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
+  (add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode)))
+
+(use-package zig-mode
+  :defer t
+  :ensure t)
+
+(use-package markdown-mode
+  :defer t
+  :ensure t)
+
+(use-package json-mode
+  :defer t
+  :ensure t)
+
+(use-package glsl-mode
+  :defer t
+  :ensure t)
 
 ;;
 ;; Evil mode
 ;;
 
-(require 'evil)
-(evil-mode 1)
-;; (setq evil-default-cursor '("green" box)
-;;       evil-normal-state-cursor '("green" box)
-;;       evil-emacs-state-cursor '("red" box)
-;;       evil-insert-state-cursor '("yellow" bar))
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode))
 
-;;
-;; Key binds
-;;
+(use-package evil
+  :ensure t
+  :config
+  (evil-mode 1)
+  (evil-set-undo-system 'undo-tree)
 
-;; (global-set-key (kbd "C-x G") 'compile)
-(global-set-key (kbd "C-x C-g") 'recompile)
+  ;; (setq evil-default-cursor '("green" box)
+  ;;       evil-normal-state-cursor '("green" box)
+  ;;       evil-emacs-state-cursor '("red" box)
+  ;;       evil-insert-state-cursor '("yellow" bar))
+  
+  (global-set-key (kbd "C-x C-g") 'recompile)
 
-(global-set-key (kbd "C-x w") 'whitespace-mode)
+  (global-set-key (kbd "C-x w") 'whitespace-mode)
 
-(global-set-key (kbd "C-o") 'backward-global-mark)
-(global-set-key (kbd "C-i") 'forward-global-mark)
-(global-set-key (kbd "<mouse-8>") 'backward-global-mark)
-(global-set-key (kbd "<mouse-9>") 'forward-global-mark)
+  (global-set-key (kbd "C-o") 'backward-global-mark)
+  (global-set-key (kbd "C-i") 'forward-global-mark)
+  (global-set-key (kbd "<mouse-8>") 'backward-global-mark)
+  (global-set-key (kbd "<mouse-9>") 'forward-global-mark)
 
-(global-set-key (kbd "C-,") 'other-window)
+  (global-set-key (kbd "C-,") 'other-window)
 
-(global-set-key (kbd "M-i") 'ido-goto-symbol)
-
-;;
-;; LSP stuff
-;;
-
-;; (require 'lsp-mode)
-;; (require 'lsp-ui)
-;; (require 'company)
-;; (require 'company-lsp)
-
-;; (require 'lsp)
-
-;; (setq lsp-ui-doc-enable nil)
-
-;; (define-key evil-normal-state-map (kbd "C-d") 'lsp-find-definition)
-
-;; (global-set-key (kbd "<f12>") 'lsp-find-definition)
-;; (global-set-key (kbd "C-x x d") 'lsp-find-definition)
-;; (global-set-key (kbd "C-x x n") 'lsp-rename)
-;; (global-set-key (kbd "C-x x r") 'lsp-format-region)
-;; (global-set-key (kbd "C-x x b") 'lsp-format-buffer)
-;; (global-set-key (kbd "C-x x k") 'lsp-ui-doc-glance)
-
-;; (add-to-list 'lsp-language-id-configuration '(zig-mode . "zig"))
-;; (lsp-register-client
-;; (make-lsp-client
-;;  :new-connection (lsp-stdio-connection "zls")
-;;  :major-modes '(zig-mode)
-;;  :server-id 'zls))
-
-;; (add-hook 'c-mode-hook 'lsp)
-;; (add-hook 'c++-mode-hook 'lsp)
-;; (add-hook 'zig-mode-hook 'lsp)
+  (global-set-key (kbd "M-i") 'ido-goto-symbol))
