@@ -188,7 +188,8 @@
 (use-package projectile
   :ensure t
   :config
-  (global-set-key (kbd "C-x p") 'projectile-command-map))
+  (global-set-key (kbd "C-x p") 'projectile-command-map)
+  (projectile-global-mode))
 
 (use-package magit
   :ensure t
