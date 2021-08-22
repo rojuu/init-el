@@ -1,3 +1,7 @@
+;;(require 'benchmark-init)
+;; To disable collection of benchmark data after init is done.
+;;(add-hook 'after-init-hook 'benchmark-init/deactivate)
+
 ;;
 ;; Visuals
 ;;
@@ -36,6 +40,7 @@
 
 (setq transient-mark-mode nil)
 
+
 ;;
 ;; Indentation and code style
 ;;
@@ -62,22 +67,6 @@
 (defun fn-term-mode-hook ()
   (setq show-trailing-whitespace nil))
 (add-hook 'term-mode-hook 'fn-term-mode-hook)
-
-;;
-;; Key binds
-;;
-
-(global-set-key (kbd "M-n") 'scroll-up)
-(global-set-key (kbd "M-p") 'scroll-down)
-
-(global-set-key (kbd "C-x t") 'delete-trailing-whitespace)
-
-;; (global-set-key (kbd "C-x G") 'compile)
-(global-set-key (kbd "C-x C-g") 'recompile)
-
-(global-set-key (kbd "C-x w") 'whitespace-mode)
-
-(global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
 
 
 ;; Back/forward withing jump list
@@ -111,11 +100,53 @@
     (call-interactively 'pop-global-mark))
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
-
-(global-set-key (kbd "<mouse-8>") (quote backward-global-mark))
-(global-set-key (kbd "<mouse-9>") (quote forward-global-mark))
-(global-set-key [M-left]  (quote backward-global-mark))
-(global-set-key [M-right] (quote forward-global-mark))
+(defun ido-goto-symbol (&optional symbol-list)
+      "Refresh imenu and jump to a place in the buffer using Ido."
+      (interactive)
+      (unless (featurep 'imenu)
+        (require 'imenu nil t))
+      (cond
+       ((not symbol-list)
+        (let ((ido-mode ido-mode)
+              (ido-enable-flex-matching
+               (if (boundp 'ido-enable-flex-matching)
+                   ido-enable-flex-matching t))
+              name-and-pos symbol-names position)
+          (unless ido-mode
+            (ido-mode 1)
+            (setq ido-enable-flex-matching t))
+          (while (progn
+                   (imenu--cleanup)
+                   (setq imenu--index-alist nil)
+                   (ido-goto-symbol (imenu--make-index-alist))
+                   (setq selected-symbol
+                         (ido-completing-read "Symbol? " symbol-names))
+                   (string= (car imenu--rescan-item) selected-symbol)))
+          (unless (and (boundp 'mark-active) mark-active)
+            (push-mark nil t nil))
+          (setq position (cdr (assoc selected-symbol name-and-pos)))
+          (cond
+           ((overlayp position)
+            (goto-char (overlay-start position)))
+           (t
+            (goto-char position)))))
+       ((listp symbol-list)
+        (dolist (symbol symbol-list)
+          (let (name position)
+            (cond
+             ((and (listp symbol) (imenu--subalist-p symbol))
+              (ido-goto-symbol symbol))
+             ((listp symbol)
+              (setq name (car symbol))
+              (setq position (cdr symbol)))
+             ((stringp symbol)
+              (setq name symbol)
+              (setq position
+                    (get-text-property 1 'org-imenu-marker symbol))))
+            (unless (or (null position) (null name)
+                        (string= (car imenu--rescan-item) name))
+              (add-to-list 'symbol-names name)
+              (add-to-list 'name-and-pos (cons name position))))))))    
 
 ;;
 ;; Packages
@@ -135,7 +166,7 @@
         magit
         rg
         dumb-jump
-        ;; evil
+        evil
         ;; undo-tree
         rainbow-delimiters
         which-key
@@ -211,13 +242,30 @@
 ;; Evil mode
 ;;
 
-;; (require 'evil)
-;; (evil-mode 1)
-
+(require 'evil)
+(evil-mode 1)
 ;; (setq evil-default-cursor '("green" box)
 ;;       evil-normal-state-cursor '("green" box)
 ;;       evil-emacs-state-cursor '("red" box)
 ;;       evil-insert-state-cursor '("yellow" bar))
+
+;;
+;; Key binds
+;;
+
+;; (global-set-key (kbd "C-x G") 'compile)
+(global-set-key (kbd "C-x C-g") 'recompile)
+
+(global-set-key (kbd "C-x w") 'whitespace-mode)
+
+(global-set-key (kbd "C-o") 'backward-global-mark)
+(global-set-key (kbd "C-i") 'forward-global-mark)
+(global-set-key (kbd "<mouse-8>") 'backward-global-mark)
+(global-set-key (kbd "<mouse-9>") 'forward-global-mark)
+
+(global-set-key (kbd "C-,") 'other-window)
+
+(global-set-key (kbd "M-i") 'ido-goto-symbol)
 
 ;;
 ;; LSP stuff
