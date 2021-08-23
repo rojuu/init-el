@@ -277,10 +277,15 @@
   (evil-mode 1)
   (evil-set-undo-system 'undo-tree)
 
-  ;; (setq evil-default-cursor '("green" box)
-  ;;       evil-normal-state-cursor '("green" box)
-  ;;       evil-emacs-state-cursor '("red" box)
-  ;;       evil-insert-state-cursor '("yellow" bar))
+  (setq evil-default-cursor '("green" box)
+        evil-normal-state-cursor '("green" box)
+        evil-emacs-state-cursor '("yellow" box)
+        evil-insert-state-cursor '("red" bar))
+
+  (with-eval-after-load 'evil-maps
+    (define-key evil-normal-state-map (kbd "C-p") nil))
+
+  (global-set-key (kbd "C-p") 'projectile-find-file)
   
   (global-set-key (kbd "C-x C-g") 'recompile)
 
