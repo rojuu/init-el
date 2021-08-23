@@ -7,8 +7,10 @@
 ;;
 
 (tool-bar-mode 0)
-(menu-bar-mode 1)
+(menu-bar-mode 0)
 (scroll-bar-mode 0)
+
+(setq make-pointer-invisible t)
 
 ;; show cwd in tile bar
 (setq frame-title-format '((:eval default-directory)))
@@ -38,7 +40,7 @@
 ;;(setq-default show-trailing-whitespace t)
 (setq-default show-trailing-whitespace nil)
 
-(setq transient-mark-mode nil)
+;; (setq transient-mark-mode nil)
 
 
 ;;
@@ -101,6 +103,11 @@
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
 
+(global-set-key [M-left]  'backward-global-mark)
+(global-set-key [M-right] 'forward-global-mark)
+(global-set-key (kbd "<mouse-8>") 'backward-global-mark)
+(global-set-key (kbd "<mouse-9>") 'forward-global-mark)
+
 
 (defun ido-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
@@ -150,6 +157,17 @@
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))    
 
+
+(global-set-key (kbd "M-i") 'ido-goto-symbol)
+
+(global-set-key (kbd "C-,") 'other-window)
+(global-set-key (kbd "C-.") 'split-window-right)
+(global-set-key (kbd "C-:") 'delete-window)
+(global-set-key (kbd "C-;") 'delete-other-windows)
+
+(global-set-key (kbd "C-x C-g") 'recompile)
+
+
 ;;
 ;; Packages
 ;;
@@ -185,10 +203,14 @@
   (setq ido-everywhere t)
   (ido-mode 1))
 
+(use-package subr-x)
+
 (use-package projectile
   :ensure t
   :config
   (global-set-key (kbd "C-x p") 'projectile-command-map)
+  (global-set-key (kbd "M-p") 'projectile-find-file)
+  (global-set-key (kbd "M-o") 'projectile-find-other-file)
   (projectile-global-mode))
 
 (use-package magit
@@ -262,40 +284,3 @@
   :defer t
   :ensure t)
 
-;;
-;; Evil mode
-;;
-
-(use-package undo-tree
-  :ensure t
-  :config
-  (global-undo-tree-mode))
-
-(use-package evil
-  :ensure t
-  :config
-  (evil-mode 1)
-  (evil-set-undo-system 'undo-tree)
-
-  (setq evil-default-cursor '("green" box)
-        evil-normal-state-cursor '("green" box)
-        evil-emacs-state-cursor '("yellow" box)
-        evil-insert-state-cursor '("red" bar))
-
-  (with-eval-after-load 'evil-maps
-    (define-key evil-normal-state-map (kbd "C-p") nil))
-
-  (global-set-key (kbd "C-p") 'projectile-find-file)
-  
-  (global-set-key (kbd "C-x C-g") 'recompile)
-
-  (global-set-key (kbd "C-x w") 'whitespace-mode)
-
-  (global-set-key (kbd "C-o") 'backward-global-mark)
-  (global-set-key (kbd "C-i") 'forward-global-mark)
-  (global-set-key (kbd "<mouse-8>") 'backward-global-mark)
-  (global-set-key (kbd "<mouse-9>") 'forward-global-mark)
-
-  (global-set-key (kbd "C-,") 'other-window)
-
-  (global-set-key (kbd "M-i") 'ido-goto-symbol))
