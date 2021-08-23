@@ -167,7 +167,6 @@
 
 (global-set-key (kbd "C-x C-g") 'recompile)
 
-
 ;;
 ;; Packages
 ;;
@@ -221,10 +220,19 @@
   :ensure t
   :defer t)
 
+
+(defun my/push-global-mark-and-dumb-jump ()
+  "Pushes point onto global mark ring before jumping to def"
+  (interactive)
+  (push-mark-maybe)
+  (dumb-jump-go))
+
 (use-package dumb-jump
   :ensure t
   :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (global-set-key (kbd "M-.") 'my/push-global-mark-and-dumb-jump)
+  (global-set-key (kbd "<f12>") 'my/push-global-mark-and-dumb-jump))
 
 (use-package rainbow-delimiters
   :ensure t
