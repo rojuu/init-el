@@ -5,7 +5,7 @@ Emacs config for my coding stuff when I feel like it. Intended to be cloned sepa
 (load "~/Projects/init-el/init.el")
 
 ;; optionally set font
-;; (set-frame-font "Inconsolata 13" nil t nil)
+;; (set-frame-font "Inconsolata 13" nil t)
 
 ;; optionally set eglot mode for specific languages (not installed by default)
 ;; (add-hook 'cc-mode-hook 'eglot)
