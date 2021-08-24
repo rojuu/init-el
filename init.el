@@ -2,50 +2,45 @@
 ;;;;To disable collection of benchmark data after init is done.
 ;;(add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-;;
-;; Visuals
-;;
-
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
 
+(cua-mode 0)
+
 (setq make-pointer-invisible t)
 
-;; show cwd in tile bar
 (setq frame-title-format '((:eval default-directory)))
 
-;; Saner defaults
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 (global-auto-revert-mode 1) ;; auto load file changes
 (add-hook 'dired-mode-hook 'auto-revert-mode) ;; auto load dired changes
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; auto repeat search
-(defadvice isearch-repeat (after isearch-no-fail activate)
+(define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+(defadvice isearch-search (after isearch-no-fail activate)
   (unless isearch-success
-    (ad-disable-advice 'isearch-repeat 'after 'isearch-no-fail)
-    (ad-activate 'isearch-repeat)
+    (ad-disable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)
     (isearch-repeat (if isearch-forward 'forward))
-    (ad-enable-advice 'isearch-repeat 'after 'isearch-no-fail)
-    (ad-activate 'isearch-repeat)))
+    (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
+    (ad-activate 'isearch-search)))
 
 (setq ring-bell-function 'ignore)
 
-(setq inhibit-startup-message t) ;; disable splash screen
+(setq inhibit-startup-message t)
 
 (setq compilation-scroll-output t) ;; will automatically place cursor at end of compilation buffer on first compile
 
 ;;(setq-default show-trailing-whitespace t)
 (setq-default show-trailing-whitespace nil)
 
-;; (setq transient-mark-mode nil)
-
-
-;;
-;; Indentation and code style
-;;
+(setq transient-mark-mode nil)
 
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
@@ -65,13 +60,11 @@
 (dolist (hook '(prog-mode-hook))
   (add-hook hook 'setup-general-code-modes))
 
-;; Term mode hook
 (defun fn-term-mode-hook ()
   (setq show-trailing-whitespace nil))
 (add-hook 'term-mode-hook 'fn-term-mode-hook)
 
 
-;; Back/forward withing jump list
 (defun marker-is-point-p (marker)
   "test if marker is current point"
   (and (eq (marker-buffer marker) (current-buffer))
@@ -83,7 +76,6 @@
     (unless (or (marker-is-point-p (car global-mark-ring))
                 (marker-is-point-p (car (reverse global-mark-ring))))
       (push-mark))))
-
 
 (defun backward-global-mark ()
   "use `pop-global-mark', pushing current point if not on ring."
@@ -105,9 +97,8 @@
 
 (global-set-key [M-left]  'backward-global-mark)
 (global-set-key [M-right] 'forward-global-mark)
-(global-set-key (kbd "<mouse-8>") 'backward-global-mark)
-(global-set-key (kbd "<mouse-9>") 'forward-global-mark)
 
+(global-set-key [home] 'back-to-indentation)
 
 (defun ido-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
@@ -168,7 +159,7 @@
 (global-set-key (kbd "C-x C-g") 'recompile)
 
 ;;
-;; Packages
+;; Stuff that requires packages
 ;;
 
 (setq package-archives
@@ -189,10 +180,6 @@
   (unless (package-installed-p pkg)
     (package-install pkg)))
 
-;;
-;; Simple utility
-;;
-
 (require 'use-package)
 
 (use-package ido
@@ -210,7 +197,9 @@
   (global-set-key (kbd "C-x p") 'projectile-command-map)
   (global-set-key (kbd "M-p") 'projectile-find-file)
   (global-set-key (kbd "M-o") 'projectile-find-other-file)
+  (global-set-key (kbd "C-S-s") 'projectile-ripgrep)
   (projectile-global-mode))
+
 
 (use-package magit
   :ensure t
@@ -220,24 +209,15 @@
   :ensure t
   :defer t)
 
-
-(defun my/push-global-mark-and-dumb-jump ()
-  "Pushes point onto global mark ring before jumping to def"
-  (interactive)
-  (push-mark-maybe)
-  (dumb-jump-go))
-
 (use-package dumb-jump
   :ensure t
   :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  (global-set-key (kbd "M-.") 'my/push-global-mark-and-dumb-jump)
-  (global-set-key (kbd "<f12>") 'my/push-global-mark-and-dumb-jump))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package rainbow-delimiters
   :ensure t
   :config
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  (add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode t))))
 
 (use-package which-key
   :ensure t
@@ -251,12 +231,6 @@
   :ensure t)
 
 
-;;
-;; Smooth scrolling
-;;
-
-;; imporved mouse scrolling
-;; scroll one line at a time (less "jumpy" than defaults)
 ;; (setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
 ;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
@@ -280,6 +254,10 @@
   :defer t
   :ensure t)
 
+(use-package cmake-mode
+  :defer t
+  :ensure t)
+
 (use-package markdown-mode
   :defer t
   :ensure t)
@@ -289,6 +267,10 @@
   :ensure t)
 
 (use-package glsl-mode
+  :defer t
+  :ensure t)
+
+(use-package protobuf-mode
   :defer t
   :ensure t)
 
