@@ -230,6 +230,9 @@
 (use-package ujelly-theme
   :ensure t)
 
+(use-package jbeans-theme
+  :ensure t)
+
 
 ;; (setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
 ;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
@@ -239,6 +242,11 @@
 ;;
 ;; Language modes
 ;;
+
+;; Adds a folder called "modes" relative to this file into the load-path. All my custom modes are in the modes folder
+(add-to-list 'load-path (expand-file-name "modes/" (file-name-directory load-file-name)))
+
+(require 'hlsl-mode)
 
 (use-package glsl-mode
   :ensure t
