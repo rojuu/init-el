@@ -126,6 +126,8 @@
 
 (global-set-key [home] 'back-to-indentation)
 
+(global-set-key (kbd "C-z") 'recenter-top-bottom)
+
 (defun ido-goto-symbol (&optional symbol-list)
   "Refresh imenu and jump to a place in the buffer using Ido."
   (interactive)
