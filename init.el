@@ -1,6 +1,5 @@
-;;(require 'benchmark-init)
-;;;;To disable collection of benchmark data after init is done.
-;;(add-hook 'after-init-hook 'benchmark-init/deactivate)
+;; (require 'benchmark-init)
+;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 (tool-bar-mode 0)
 (menu-bar-mode 0)
@@ -9,6 +8,8 @@
 (cua-mode 0)
 
 (setq make-pointer-invisible t)
+
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
 (setq frame-title-format '((:eval default-directory)))
 
@@ -45,16 +46,41 @@
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
 
+(setq electric-indent-inhibit t)
+(setq backward-delete-char-untabify-method 'untabify)
+
+(defun enable-tabs ()
+  ;; make tab insert a tab when indenting with tabs y'know
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  (setq c-indent-tabs-mode t)
+  (setq indent-tabs-mode t))
+
+(defun enable-spaces ()
+  (setq indent-tabs-mode nil))
+
 (defun infer-indentation-style ()
   (setq-default indent-tabs-mode nil)
   ;; if our source file uses tabs, we use tabs, if spaces spaces, and if
   ;; neither, we use the current indent-tabs-mode (set to nil by default)
   (let ((space-count (how-many "^  " (point-min) (point-max)))
         (tab-count (how-many "^\t" (point-min) (point-max))))
-    (if (> space-count tab-count) (setq indent-tabs-mode nil))
-    (if (> tab-count space-count) (setq indent-tabs-mode t))))
+    (if (> space-count tab-count) (enable-spaces))
+    (if (> tab-count space-count) (enable-tabs))))
+
+(setq-default tab-always-indent nil)
+(setq-default c-tab-always-indent nil)
 
 (defun setup-general-code-modes ()
+  ;; Disable the annoying electric indent shit when I type a ; at the end of a statement
+  (define-key c-mode-base-map "#" 'self-insert-command)
+  (define-key c-mode-base-map "(" 'self-insert-command)
+  (define-key c-mode-base-map "*" 'self-insert-command)
+  (define-key c-mode-base-map "," 'self-insert-command)
+  (define-key c-mode-base-map "/" 'self-insert-command)
+  (define-key c-mode-base-map ":" 'self-insert-command)
+  (define-key c-mode-base-map ";" 'self-insert-command)
+  (define-key c-mode-base-map "{" 'self-insert-command)
+  (define-key c-mode-base-map "}" 'self-insert-command)
   (infer-indentation-style))
 
 (dolist (hook '(prog-mode-hook))
@@ -184,20 +210,24 @@
 
 (use-package ido
   :ensure t
+  :defer t
   :config
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
+  :init
   (ido-mode 1))
 
 (use-package subr-x)
 
 (use-package projectile
   :ensure t
-  :config
-  (global-set-key (kbd "C-x p") 'projectile-command-map)
-  (global-set-key (kbd "M-p") 'projectile-find-file)
-  (global-set-key (kbd "M-o") 'projectile-find-other-file)
-  (global-set-key (kbd "C-S-s") 'projectile-ripgrep)
+  :defer t
+  :bind (("C-x p" . projectile-command-map)
+         ("C-x p" . projectile-command-map)
+         ("M-p" . projectile-find-file)
+         ("M-o" . projectile-find-other-file)
+         ("C-S-s" . projectile-ripgrep))
+  :init
   (projectile-global-mode))
 
 
@@ -205,39 +235,55 @@
   :ensure t
   :defer t)
 
+;; (use-package ripgrep
+;;   :ensure t
+;;   :defer t)
+
 (use-package rg
   :ensure t
   :defer t)
 
 (use-package dumb-jump
   :ensure t
-  :config
+  :defer t
+  :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package rainbow-delimiters
   :ensure t
-  :config
-  (add-hook 'prog-mode-hook (lambda () (rainbow-delimiters-mode t))))
+  :defer t
+  :hook (prog-mode . (lambda() (rainbow-delimiters-mode t))))
 
 (use-package which-key
   :ensure t
-  :config
+  :defer t
+  :init
   (which-key-mode))
 
+(use-package multiple-cursors
+  :ensure t
+  :defer t
+  ;; a bit awkward binds, but it works (at least on nordic layout :D)
+  :bind (("C-å" . mc/unmark-next-like-this)
+         ("C-ä" . mc/skip-to-next-like-this)
+         ("C-ö" . mc/mark-next-like-this-symbol)))
+
+
+(setq custom-safe-themes t)   ; Treat all themes as safe
+
 (use-package inkpot-theme
-  :ensure t)
+  :ensure t
+  :defer t
+  :init
+  (load-theme 'inkpot))
 
-(use-package ujelly-theme
-  :ensure t)
+;; (use-package ujelly-theme
+;;   :ensure t)
 
-(use-package jbeans-theme
-  :ensure t)
+;; (use-package jbeans-theme
+;;  :ensure t)
 
 
-;; (setq mouse-wheel-scroll-amount '(3 ((shift) . 8) ((control) . nil))) ;; one line at a time
-;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-;; (setq scroll-step 1) ;; keyboard scroll one line at a time
 
 ;;
 ;; Language modes

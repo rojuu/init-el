@@ -5,13 +5,8 @@ Emacs config for my coding stuff when I feel like it. Intended to be cloned sepa
 (load "~/Projects/init-el/init.el")
 
 ;; optionally set font
-;; (set-frame-font "Inconsolata 13" nil t)
+;; (set-frame-font "Hack 10" nil t)
 
-;; optionally set eglot mode for specific languages (not installed by default)
-;; (add-hook 'cc-mode-hook 'eglot)
-
-(setq custom-safe-themes t)   ; Treat all themes as safe
-(load-theme 'inkpot)
 ```
 
 For project specific config you can for example use this `.dir-locals.el` file that has been useful with this config for C++:
