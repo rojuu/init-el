@@ -237,6 +237,8 @@
   (projectile-global-mode))
 
 
+;; Magit is very slow on windows :(
+;; https://github.com/magit/magit/issues/2395
 (use-package magit
   :ensure t
   :defer t)
