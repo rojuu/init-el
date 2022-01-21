@@ -13,6 +13,10 @@
 
 (setq frame-title-format '((:eval default-directory)))
 
+(setq-default cursor-type '(bar . 1))
+(setq-default cursor-in-non-selected-windows nil)
+(set-cursor-color "yellow")
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
