@@ -252,6 +252,8 @@
 (use-package dumb-jump
   :ensure t
   :defer t
+  :config
+  (setq dumb-jump-prefer-searcher 'rg)
   :init
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
