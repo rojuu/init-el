@@ -279,19 +279,23 @@
 
 (setq custom-safe-themes t)   ; Treat all themes as safe
 
-(use-package inkpot-theme
+;; (use-package inkpot-theme
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (load-theme 'inkpot))
+
+;; (use-package ujelly-theme
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (load-theme 'ujelly))
+
+(use-package jbeans-theme
   :ensure t
   :defer t
   :init
-  (load-theme 'inkpot))
-
-;; (use-package ujelly-theme
-;;   :ensure t)
-
-;; (use-package jbeans-theme
-;;  :ensure t)
-
-
+  (load-theme 'jbeans))
 
 ;;
 ;; Language modes
