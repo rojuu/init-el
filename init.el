@@ -75,6 +75,18 @@
 (setq-default tab-always-indent nil)
 (setq-default c-tab-always-indent nil)
 
+(defun top-join-line ()
+  "Join the current line with the line beneath it."
+  (interactive)
+  (delete-indentation 1))
+
+(global-set-key (kbd "C-j") 'top-join-line)
+
+(require 'misc)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
+
+(global-set-key (kbd "M-+") 'delete-horizontal-space) ;; + and \ are on same key on nordic layout, so emulate M-\ with this
 (global-set-key (kbd "C-M-+") 'indent-region) ;; + and \ are on same key on nordic layout, so emulate C-M-\ with this
 
 (defun setup-general-code-modes ()
@@ -131,7 +143,7 @@
 (global-set-key [M-left]  'backward-global-mark)
 (global-set-key [M-right] 'forward-global-mark)
 
-(global-set-key [home] 'back-to-indentation)
+(global-set-key [home] 'move-beginning-of-line)
 
 (global-set-key (kbd "C-z") 'recenter-top-bottom)
 
