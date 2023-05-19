@@ -253,17 +253,6 @@
   :init
   (projectile-global-mode))
 
-
-;; Magit is very slow on windows :(
-;; https://github.com/magit/magit/issues/2395
-;; (use-package magit
-;;   :ensure t
-;;   :defer t)
-
-;; (use-package ripgrep
-;;   :ensure t
-;;   :defer t)
-
 (use-package rg
   :ensure t
   :defer t)
@@ -292,27 +281,7 @@
   :config
   (editorconfig-mode 1))
 
-;; (use-package multiple-cursors
-;;   :ensure t
-;;   :defer t
-;;   ;; a bit awkward binds, but it works (at least on nordic layout :D)
-;;   :bind (("C-å" . mc/unmark-next-like-this)
-;;          ("C-ä" . mc/skip-to-next-like-this)
-;;          ("C-ö" . mc/mark-next-like-this-symbol)))
-
 (setq custom-safe-themes t)   ; Treat all themes as safe
-
-;; (use-package inkpot-theme
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (load-theme 'inkpot))
-
-;; (use-package ujelly-theme
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (load-theme 'ujelly))
 
 (use-package jbeans-theme
   :ensure t
