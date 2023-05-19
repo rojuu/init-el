@@ -8,8 +8,9 @@
 (cua-mode 0)
 
 (setq make-pointer-invisible t)
-
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq ring-bell-function 'ignore)
+(setq inhibit-startup-message t)
 
 (setq frame-title-format '((:eval default-directory)))
 
@@ -37,9 +38,6 @@
     (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
     (ad-activate 'isearch-search)))
 
-(setq ring-bell-function 'ignore)
-
-(setq inhibit-startup-message t)
 
 (setq compilation-scroll-output t) ;; will automatically place cursor at end of compilation buffer on first compile
 
@@ -229,6 +227,11 @@
 
 (require 'use-package)
 
+;; Adds a folder called "modes" relative to this file into the load-path.
+;; All my custom modes are in the modes folder
+(add-to-list 'load-path (expand-file-name "modes/" (file-name-directory load-file-name)))
+
+
 (use-package ido
   :ensure t
   :defer t
@@ -320,9 +323,6 @@
 ;;
 ;; Language modes
 ;;
-
-;; Adds a folder called "modes" relative to this file into the load-path. All my custom modes are in the modes folder
-(add-to-list 'load-path (expand-file-name "modes/" (file-name-directory load-file-name)))
 
 (require 'hlsl-mode)
 
