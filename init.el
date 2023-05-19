@@ -195,6 +195,7 @@
 
 (global-set-key (kbd "C-x c") 'recompile)
 (global-set-key (kbd "C-x q") 'quick-calc)
+(global-set-key (kbd "C-x g") 'goto-line)
 
 (defun top-join-line ()
   "Join the current line with the line beneath it."
