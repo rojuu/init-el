@@ -293,6 +293,10 @@
   :defer t
   :ensure t)
 
+(use-package csharp-mode
+  :defer t
+  :ensure t)
+
 (use-package typescript-mode
   :defer t
   :ensure t)
