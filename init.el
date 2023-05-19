@@ -137,7 +137,6 @@
   (split-window-below)
   (windmove-down))
 
-(global-set-key [home] 'move-beginning-of-line)
 (global-set-key [C-M-left]  'my-split-window-left)
 (global-set-key [C-M-right] 'my-split-window-right)
 (global-set-key [C-M-up]    'my-split-window-up)
