@@ -146,7 +146,7 @@
 
 
 (global-set-key (kbd "C-,") 'other-window)
-(global-set-key (kbd "C-.") 'my-split-window-right)
+(global-set-key (kbd "C-.") 'split-window-right)
 (global-set-key (kbd "C-q") 'delete-window)
 (global-set-key (kbd "C-:") 'delete-window)
 (global-set-key (kbd "C-;") 'delete-other-windows)
