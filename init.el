@@ -131,6 +131,12 @@
   (call-interactively 'pop-global-mark)
   (setq global-mark-ring (nreverse global-mark-ring)))
 
+(defun top-join-line ()
+  "Join the current line with the line beneath it."
+  (interactive)
+  (delete-indentation 1))
+
+
 (global-set-key [M-left]  'backward-global-mark)
 (global-set-key [M-right] 'forward-global-mark)
 
@@ -197,10 +203,6 @@
 (global-set-key (kbd "C-x q") 'quick-calc)
 (global-set-key (kbd "C-x g") 'goto-line)
 
-(defun top-join-line ()
-  "Join the current line with the line beneath it."
-  (interactive)
-  (delete-indentation 1))
 (global-set-key (kbd "C-<return>") 'dabbrev-expand)
 
 (global-set-key (kbd "C-j") 'top-join-line)
