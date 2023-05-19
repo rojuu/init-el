@@ -106,47 +106,49 @@
   (and (eq (marker-buffer marker) (current-buffer))
        (= (marker-position marker) (point))))
 
-(defun push-mark-maybe ()
-  "push mark onto `global-mark-ring' if mark head or tail is not current location"
-  (if (not global-mark-ring) (error "global-mark-ring empty")
-    (unless (or (marker-is-point-p (car global-mark-ring))
-                (marker-is-point-p (car (reverse global-mark-ring))))
-      (push-mark))))
-
-(defun backward-global-mark ()
-  "use `pop-global-mark', pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark))
-
-(defun forward-global-mark ()
-  "hack `pop-global-mark' to go in reverse, pushing current point if not on ring."
-  (interactive)
-  (push-mark-maybe)
-  (setq global-mark-ring (nreverse global-mark-ring))
-  (when (marker-is-point-p (car global-mark-ring))
-    (call-interactively 'pop-global-mark))
-  (call-interactively 'pop-global-mark)
-  (setq global-mark-ring (nreverse global-mark-ring)))
-
 (defun top-join-line ()
   "Join the current line with the line beneath it."
   (interactive)
   (delete-indentation 1))
 
 
-(global-set-key [M-left]  'backward-global-mark)
-(global-set-key [M-right] 'forward-global-mark)
+(global-set-key [M-left]  'windmove-left)
+(global-set-key [M-right] 'windmove-right)
+(global-set-key [M-up]    'windmove-up)
+(global-set-key [M-down]  'windmove-down)
+
+(defun my-split-window-left ()
+  ""
+  (interactive)
+  (split-window-right))
+(defun my-split-window-right ()
+  ""
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+(defun my-split-window-up ()
+  ""
+  (interactive)
+  (split-window-vertically)
+  (windmove-up))
+(defun my-split-window-down ()
+  ""
+  (interactive)
+  (split-window-below)
+  (windmove-down))
 
 (global-set-key [home] 'move-beginning-of-line)
+(global-set-key [C-M-left]  'my-split-window-left)
+(global-set-key [C-M-right] 'my-split-window-right)
+(global-set-key [C-M-up]    'my-split-window-up)
+(global-set-key [C-M-down]  'my-split-window-down)
 
 (global-set-key (kbd "C-z") 'recenter-top-bottom)
 
 
 (global-set-key (kbd "C-,") 'other-window)
-(global-set-key (kbd "C-.") 'split-window-right)
+(global-set-key (kbd "C-.") 'my-split-window-right)
+(global-set-key (kbd "C-q") 'delete-window)
 (global-set-key (kbd "C-:") 'delete-window)
 (global-set-key (kbd "C-;") 'delete-other-windows)
 
