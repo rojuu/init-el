@@ -38,6 +38,13 @@
     (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
     (ad-activate 'isearch-search)))
 
+(setq-default truncate-lines t)
+(setq truncate-partial-width-windows nil)
+;; (defun my-compilation-hook ()
+;;   (make-local-variable 'truncate-lines)
+;;   (setq truncate-lines nil)
+;; )
+;; (add-hook 'compilation-mode-hook 'my-compilation-hook)
 
 (setq compilation-scroll-output t) ;; will automatically place cursor at end of compilation buffer on first compile
 
