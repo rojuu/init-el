@@ -75,20 +75,6 @@
 (setq-default tab-always-indent nil)
 (setq-default c-tab-always-indent nil)
 
-(defun top-join-line ()
-  "Join the current line with the line beneath it."
-  (interactive)
-  (delete-indentation 1))
-
-(global-set-key (kbd "C-j") 'top-join-line)
-
-(require 'misc)
-(global-set-key (kbd "M-z") 'zap-up-to-char)
-
-
-(global-set-key (kbd "M-+") 'delete-horizontal-space) ;; + and \ are on same key on nordic layout, so emulate M-\ with this
-(global-set-key (kbd "C-M-+") 'indent-region) ;; + and \ are on same key on nordic layout, so emulate C-M-\ with this
-
 (defun setup-general-code-modes ()
   ;; Disable the annoying electric indent shit when I type a ; at the end of a statement
   (define-key c-mode-base-map "#" 'self-insert-command)
@@ -193,10 +179,9 @@
         (unless (or (null position) (null name)
                     (string= (car imenu--rescan-item) name))
           (add-to-list 'symbol-names name)
-          (add-to-list 'name-and-pos (cons name position))))))))    
+          (add-to-list 'name-and-pos (cons name position))))))))
 
 
-(global-set-key (kbd "M-i") 'ido-goto-symbol)
 
 (global-set-key (kbd "C-,") 'other-window)
 (global-set-key (kbd "C-.") 'split-window-right)
@@ -204,8 +189,21 @@
 (global-set-key (kbd "C-;") 'delete-other-windows)
 
 (global-set-key (kbd "C-x c") 'recompile)
-
 (global-set-key (kbd "C-x q") 'quick-calc)
+
+(defun top-join-line ()
+  "Join the current line with the line beneath it."
+  (interactive)
+  (delete-indentation 1))
+(global-set-key (kbd "C-j") 'top-join-line)
+
+(require 'misc)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
+
+;; + and \ are on same key on nordic layout, so emulate M-\ with these
+(global-set-key (kbd "M-+") 'delete-horizontal-space)
+(global-set-key (kbd "C-M-+") 'indent-region)
+
 
 ;;
 ;; Stuff that requires packages
