@@ -13,9 +13,10 @@
 
 (setq frame-title-format '((:eval default-directory)))
 
-(setq-default cursor-type '(bar . 1))
+;;(setq-default cursor-type '(bar . 1))
+(setq-default cursor-type 'box)
 (setq-default cursor-in-non-selected-windows nil)
-(set-cursor-color "yellow")
+(set-cursor-color "green")
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -55,7 +56,7 @@
 
 (defun enable-tabs ()
   ;; make tab insert a tab when indenting with tabs y'know
-  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  ;;(local-set-key (kbd "TAB") 'tab-to-tab-stop)
   (setq c-indent-tabs-mode t)
   (setq indent-tabs-mode t))
 
@@ -73,6 +74,8 @@
 
 (setq-default tab-always-indent nil)
 (setq-default c-tab-always-indent nil)
+
+(global-set-key (kbd "C-M-+") 'indent-region) ;; + and \ are on same key on nordic layout, so emulate C-M-\ with this
 
 (defun setup-general-code-modes ()
   ;; Disable the annoying electric indent shit when I type a ; at the end of a statement
@@ -188,7 +191,9 @@
 (global-set-key (kbd "C-:") 'delete-window)
 (global-set-key (kbd "C-;") 'delete-other-windows)
 
-(global-set-key (kbd "C-x C-g") 'recompile)
+(global-set-key (kbd "C-x c") 'recompile)
+
+(global-set-key (kbd "C-x q") 'quick-calc)
 
 ;;
 ;; Stuff that requires packages
@@ -229,7 +234,6 @@
   :ensure t
   :defer t
   :bind (("C-x p" . projectile-command-map)
-         ("C-x p" . projectile-command-map)
          ("M-p" . projectile-find-file)
          ("M-o" . projectile-find-other-file)
          ("C-S-s" . projectile-ripgrep))
@@ -239,9 +243,9 @@
 
 ;; Magit is very slow on windows :(
 ;; https://github.com/magit/magit/issues/2395
-(use-package magit
-  :ensure t
-  :defer t)
+;; (use-package magit
+;;   :ensure t
+;;   :defer t)
 
 ;; (use-package ripgrep
 ;;   :ensure t
@@ -270,14 +274,18 @@
   :init
   (which-key-mode))
 
-(use-package multiple-cursors
+(use-package editorconfig
   :ensure t
-  :defer t
-  ;; a bit awkward binds, but it works (at least on nordic layout :D)
-  :bind (("C-å" . mc/unmark-next-like-this)
-         ("C-ä" . mc/skip-to-next-like-this)
-         ("C-ö" . mc/mark-next-like-this-symbol)))
+  :config
+  (editorconfig-mode 1))
 
+;; (use-package multiple-cursors
+;;   :ensure t
+;;   :defer t
+;;   ;; a bit awkward binds, but it works (at least on nordic layout :D)
+;;   :bind (("C-å" . mc/unmark-next-like-this)
+;;          ("C-ä" . mc/skip-to-next-like-this)
+;;          ("C-ö" . mc/mark-next-like-this-symbol)))
 
 (setq custom-safe-themes t)   ; Treat all themes as safe
 
@@ -339,6 +347,10 @@
   :ensure t)
 
 (use-package protobuf-mode
+  :defer t
+  :ensure t)
+
+(use-package typescript-mode
   :defer t
   :ensure t)
 

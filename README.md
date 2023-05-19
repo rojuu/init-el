@@ -2,7 +2,7 @@
 
 Emacs config for my coding stuff when I feel like it. Intended to be cloned separatedy and loaded in emacs init.el file. That way you can also add other configurations for each computer. Example `~/.emacs.d/init.el` file:
 ```
-(load "~/Projects/init-el/init.el")
+(load "~/init-el/init.el")
 
 ;; optionally set font
 ;; (set-frame-font "Hack 10" nil t)
