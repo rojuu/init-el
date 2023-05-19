@@ -201,6 +201,8 @@
   "Join the current line with the line beneath it."
   (interactive)
   (delete-indentation 1))
+(global-set-key (kbd "C-<return>") 'dabbrev-expand)
+
 (global-set-key (kbd "C-j") 'top-join-line)
 
 (require 'misc)
